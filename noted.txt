@@ -1,0 +1,85 @@
+tahapan membuat website prayer times :
+
+1. membuat file index.html dengan body sebagai berikut :
+    <body>
+        <div id="app">
+
+        </div>
+    </body>
+
+2. membuat file app.js dan membuat function index untuk tampilan html
+
+    function index() {
+        let app = document.getElementById('app');
+        let h3 = document.createElement('h3');
+        h3.innerHTML = 'Prayer Times';
+
+
+        app.appendChild(h3);
+        userLocation();
+    }
+
+    index();
+
+3. menggunakan file app.js di dalam file index.html setelah tag <title> atau <body>
+    <script src="app.js"></script>
+
+4. membuat permission geolocation beserta callback log dan panggil function userLocation() didalam function index()
+
+    //* function callback Geolocation
+    function success(position) {
+        console.log(position);
+        prayerTimes(position.coords.latitude, position.coords.longitude);
+    }
+
+    function error() {
+        alert('Posisi tidak dapat diakses');
+    }
+
+    //* function geolocation for userLocation
+    function userLocation() {
+        if (!navigator.geolocation) {
+            alert('Browser anda tidak mendukung geolocation, silahkan gunakan browser lain !');
+        } else {
+            navigator.geolocation.getCurrentPosition(success, error);
+        }
+    }
+
+5. membuat function fetch API jadwal sholat dari aladhan.com dengan paramete latitude dan longitude
+
+    //* function fetch API from aladhan.com
+    function prayerTimes(latitude, longitude) {
+        fetch('https://api.aladhan.com/v1/calendar?latitude=' + latitude + '&longitude=' + longitude + '&method=2&month=9&year=2021').then(response => response.json()).then(function (response) {
+            console.log(response);
+            let date = new Date();
+            let today = date.getDate() - 1;
+            console.log(response.data[today].timings);
+        });
+    }
+
+6. menampilkan jadwal sholat berdasarkan waktu hari ini
+   tambahkan query dibawah ini di dalam function prayerTimes()
+   
+   let date = new Date();
+   let today = date.getDate() - 1;
+
+7. membuat tabel untuk menampilkan data yang sudah di dapat dari API 
+   tambahkan query dibawah ini di dalam function prayerTimes();
+
+   let data = response.data[today].timings;
+
+    let app = document.getElementById('app');
+    let table = document.createElement('table');
+    let tableTbody = document.createElement('tbody');
+
+    for (i in data) {
+        let row = tableTbody.insertRow();
+        let name = row.insertCell(0);
+        let time = row.insertCell(1);
+
+        name.innerHTML = i;
+        time.innerHTML = data[i];
+        tableTbody.appendChild(row);
+    }
+    table.appendChild(tableTbody);
+    app.appendChild(table);
