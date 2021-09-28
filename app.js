@@ -33,7 +33,8 @@ function success(position) {
 }
 
 function error() {
-    alert('Posisi tidak dapat diakses');
+    //* default latitude dan longitude DKI Jakarta
+    prayerTimes('-6.200000', '106.816666');
 }
 
 //* function geolocation for userLocation
